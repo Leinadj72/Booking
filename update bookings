@@ -1,0 +1,17 @@
+<?php
+include 'config/db.php';
+
+$data = json_decode(file_get_contents("php://input"), true);
+$booking_id = $data['booking_id'];
+$status = $data['status'];
+
+$sql = "UPDATE bookings SET status = ? WHERE booking_id = ?";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$status, $booking_id]);
+
+if ($status === 'rejected') {
+    echo json_encode(["success" => true, "message" => "Booking rejected. Slot is now available."]);
+} else {
+    echo json_encode(["success" => true, "message" => "Booking updated successfully."]);
+}
+?>
