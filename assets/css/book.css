@@ -69,14 +69,28 @@ main {
 }
 
 .booked {
-  background: #dc3545;
+  background: red;
   color: white;
   cursor: not-allowed;
+  border: 1px solid darkred;
+}
+
+.booked-by-user {
+  background: orange;
+  color: white;
+  cursor: pointer;
+  border: 1px solid darkorange;
 }
 
 .available {
-  background: #28a745;
+  background: green;
   color: white;
+  cursor: pointer;
+  border: 1px solid darkgreen;
+}
+
+button:hover {
+  opacity: 0.8;
 }
 
 @media screen and (max-width: 768px) {

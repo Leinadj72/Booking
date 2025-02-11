@@ -4,12 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetch('fetch_bookings.php')
     .then((response) => response.json())
-    .then((bookedSlots) => {
-      generateWeeklyCalendar(bookedSlots);
-      generateMonthlyCalendar(bookedSlots);
-    });
+    .then(({ bookedSlots, currentUserId }) =>
+      generateWeeklyCalendar(bookedSlots, currentUserId)
+    );
 
-  function generateWeeklyCalendar(bookedSlots) {
+  function generateWeeklyCalendar(bookedSlots, currentUserId) {
     calendarContainer.innerHTML = '';
 
     for (let day = 0; day < 7; day++) {
@@ -27,18 +26,26 @@ document.addEventListener('DOMContentLoaded', () => {
         slotButton.setAttribute('data-date', dateStr);
         slotButton.setAttribute('data-time', time);
 
-        if (
-          bookedSlots.some(
-            (slot) => slot.date === dateStr && slot.time === time
-          )
-        ) {
-          slotButton.disabled = true;
-          slotButton.classList.add('booked');
-        }
+        const booking = bookedSlots.find(
+          (slot) => slot.date === dateStr && slot.time === time
+        );
 
-        slotButton.addEventListener('click', () => {
-          bookSlot(dateStr, time);
-        });
+        if (booking) {
+          if (booking.user_id === currentUserId) {
+            slotButton.classList.add('booked-by-user');
+            slotButton.addEventListener('click', () =>
+              cancelBooking(dateStr, time, slotButton)
+            );
+          } else {
+            slotButton.classList.add('booked');
+            slotButton.disabled = true;
+          }
+        } else {
+          slotButton.classList.add('available');
+          slotButton.addEventListener('click', () =>
+            bookSlot(dateStr, time, slotButton)
+          );
+        }
 
         dayDiv.appendChild(slotButton);
       });
@@ -47,50 +54,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function generateMonthlyCalendar(bookedSlots) {
-    let today = new Date();
-    let currentYear = today.getFullYear();
-    let currentMonth = today.getMonth();
-    let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      let dateString = `${currentYear}-${String(currentMonth + 1).padStart(
-        2,
-        '0'
-      )}-${String(day).padStart(2, '0')}`;
-      let dayDiv = document.createElement('div');
-      dayDiv.classList.add('calendar-day');
-      dayDiv.textContent = day;
-
-      if (bookedSlots.some((slot) => slot.date === dateString)) {
-        dayDiv.classList.add('booked');
-        dayDiv.innerHTML = `${day} 🔴`;
-      } else {
-        dayDiv.classList.add('available');
-        dayDiv.innerHTML = `${day} ✅`;
-        dayDiv.addEventListener('click', () => bookSlot(dateString));
-      }
-
-      calendarContainer.appendChild(dayDiv);
-    }
-  }
-
-  function bookSlot(date, time = null) {
-    let bookingData = { date };
-    if (time) {
-      bookingData.time = time;
-    }
-
+  function bookSlot(date, time, button) {
     fetch('book.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bookingData),
+      body: JSON.stringify({ date, time }),
     })
       .then((response) => response.json())
       .then((result) => {
         alert(result.message);
         if (result.success) {
-          location.reload();
+          button.classList.remove('available');
+          button.classList.add('booked-by-user');
+          button.removeEventListener('click', () =>
+            bookSlot(date, time, button)
+          );
+          button.addEventListener('click', () =>
+            cancelBooking(date, time, button)
+          );
+        }
+      });
+  }
+
+  function cancelBooking(date, time, button) {
+    fetch('cancel_booking.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, time }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        alert(result.message);
+        if (result.success) {
+          button.classList.remove('booked-by-user');
+          button.classList.add('available');
+          button.removeEventListener('click', () =>
+            cancelBooking(date, time, button)
+          );
+          button.addEventListener('click', () => bookSlot(date, time, button));
         }
       });
   }
