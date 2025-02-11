@@ -77,6 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function cancelBooking(date, time, button) {
+    // Show a confirmation dialog before proceeding
+    const confirmCancel = confirm(
+      'Are you sure you want to cancel this booking?'
+    );
+
+    if (!confirmCancel) {
+      return; // Stop the function if the user clicks "Cancel"
+    }
+
     fetch('cancel_booking.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -86,8 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((result) => {
         alert(result.message);
         if (result.success) {
+          // Change the button's appearance back to "available"
           button.classList.remove('booked-by-user');
           button.classList.add('available');
+
+          // Remove the cancel event and add back the booking event
           button.removeEventListener('click', () =>
             cancelBooking(date, time, button)
           );
