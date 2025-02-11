@@ -33,18 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (booking) {
           if (booking.user_id === currentUserId) {
             slotButton.classList.add('booked-by-user');
-            slotButton.addEventListener('click', () =>
-              cancelBooking(dateStr, time, slotButton)
-            );
+            slotButton.onclick = () => cancelBooking(dateStr, time, slotButton);
           } else {
             slotButton.classList.add('booked');
             slotButton.disabled = true;
           }
         } else {
           slotButton.classList.add('available');
-          slotButton.addEventListener('click', () =>
-            bookSlot(dateStr, time, slotButton)
-          );
+          slotButton.onclick = () => bookSlot(dateStr, time, slotButton);
         }
 
         dayDiv.appendChild(slotButton);
@@ -66,12 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) {
           button.classList.remove('available');
           button.classList.add('booked-by-user');
-          button.removeEventListener('click', () =>
-            bookSlot(date, time, button)
-          );
-          button.addEventListener('click', () =>
-            cancelBooking(date, time, button)
-          );
+          button.onclick = null; // Remove old event
+          button.onclick = () => cancelBooking(date, time, button);
         }
       });
   }
@@ -95,15 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((result) => {
         alert(result.message);
         if (result.success) {
-          // Change the button's appearance back to "available"
           button.classList.remove('booked-by-user');
           button.classList.add('available');
-
-          // Remove the cancel event and add back the booking event
-          button.removeEventListener('click', () =>
-            cancelBooking(date, time, button)
-          );
-          button.addEventListener('click', () => bookSlot(date, time, button));
+          button.onclick = null; // Remove old event
+          button.onclick = () => bookSlot(date, time, button);
         }
       });
   }
