@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
   const calendarContainer = document.getElementById('calendar');
   const hours = Array.from({ length: 8 }, (_, i) => `${9 + i}:00`);
+  /* console.log('currentUserId'); */
 
   fetch('fetch_bookings.php')
     .then((response) => response.json())
-    .then(({ bookedSlots, currentUserId }) =>
-      generateWeeklyCalendar(bookedSlots, currentUserId)
-    );
+    .then(({ bookedSlots, currentUserId }) => {
+      console.log('currentUserId:', currentUserId);
+      console.log('Booked Slots:', bookedSlots);
+
+      generateWeeklyCalendar(bookedSlots, currentUserId);
+    })
+    .catch((error) => console.error('Fetch error:', error));
 
   function generateWeeklyCalendar(bookedSlots, currentUserId) {
     calendarContainer.innerHTML = '';

@@ -30,7 +30,7 @@ $bookedSlots = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </nav>
     </header>
-
+    <main>
     <div class="container">
         <h1>Booked Slots</h1>
         <div id="calendar">
@@ -62,6 +62,7 @@ $bookedSlots = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
     </div>
+    </main>
 
     <footer>
         <p>&copy; 2025 Booking Website. All rights reserved.</p>
