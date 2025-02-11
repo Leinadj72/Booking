@@ -62,20 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) {
           button.classList.remove('available');
           button.classList.add('booked-by-user');
-          button.onclick = null; // Remove old event
+          button.onclick = null;
           button.onclick = () => cancelBooking(date, time, button);
         }
       });
   }
 
   function cancelBooking(date, time, button) {
-    // Show a confirmation dialog before proceeding
     const confirmCancel = confirm(
       'Are you sure you want to cancel this booking?'
     );
 
     if (!confirmCancel) {
-      return; // Stop the function if the user clicks "Cancel"
+      return;
     }
 
     fetch('cancel_booking.php', {
@@ -89,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) {
           button.classList.remove('booked-by-user');
           button.classList.add('available');
-          button.onclick = null; // Remove old event
+          button.onclick = null;
           button.onclick = () => bookSlot(date, time, button);
         }
       });
