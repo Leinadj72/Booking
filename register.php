@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Register</button>
         </form>
     </div>
+    <script src="assets/js/script.js"></script>
 </body>
 
 </html>

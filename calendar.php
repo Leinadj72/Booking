@@ -1,18 +1,21 @@
 <?php
 session_start();
+include 'config/db.php';
+
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    echo json_encode(['bookedSlots' => [], 'currentUserId' => null]);
     exit;
 }
 
-include 'config/db.php';
+$user_id = $_SESSION['user_id'];
 
-$sql = "SELECT date, time FROM bookings WHERE status = 'approved'";
+$sql = "SELECT booking_id, user_id, date, time, status FROM bookings WHERE status IN ('pending', 'approved')";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $bookedSlots = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-header('Content-Type: application/json');
-echo json_encode($bookedSlots);
-exit;
+echo json_encode([
+    "bookedSlots" => $bookedSlots,
+    "currentUserId" => $user_id
+]);
 ?>

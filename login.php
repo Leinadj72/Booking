@@ -61,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Login</button>
         </form>
     </div>
+    <script src="assets/js/script.js"></script>
 </body>
 
 </html>
