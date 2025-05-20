@@ -1,5 +1,3 @@
-console.log('Script loaded successfully');
-
 document.addEventListener('DOMContentLoaded', () => {
   const calendarContainer = document.getElementById('calendar');
   const hours = Array.from({ length: 8 }, (_, i) => `${9 + i}:00`);
@@ -32,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         slotButton.textContent = time;
         slotButton.setAttribute('data-date', dateStr);
         slotButton.setAttribute('data-time', time);
+
+        slotButton.classList.remove('available', 'booked', 'booked-by-user');
 
         const booking = bookedSlots.find(
           (slot) => slot.date === dateStr && slot.time === time
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((result) => {
         alert(result.message);
         if (result.success) {
-          button.classList.remove('booked-by-user');
+          button.classList.remove('');
           button.classList.add('available');
           button.onclick = null;
           button.onclick = () => bookSlot(date, time, button);
