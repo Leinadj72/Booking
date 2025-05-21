@@ -95,12 +95,13 @@ button[name='action'][value='reject']:hover {
   background-color: #c0392b;
 }
 
-textarea {
+textarea[name='reason'] {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  resize: vertical;
 }
 
 @media (max-width: 768px) {

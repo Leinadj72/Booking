@@ -96,5 +96,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
         </section>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorALL('form');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    const action = e.submitter?.value;
+                    const reason = form.querySelector('textarea[name="reason]');
+
+                    if (action === 'reject' && reason && reason.value.trim() === '') {
+                        e.preventDefault();
+                        alert('Please provide a reason for rejecting the booking.');
+                        reason.focus();
+                    }
+                })
+            })
+        })
+    </script>
 </body>
 </html>

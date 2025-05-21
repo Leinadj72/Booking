@@ -9,7 +9,7 @@ include 'config/db.php';
 
 $userId = $_SESSION['user_id'];
 
-$sql = "SELECT date, time, status, reason FROM bookings WHERE user_id = :user_id ORDER BY date DESC, time ASC";
+$sql = "SELECT date, time, status, rejection_reason AS reason FROM bookings WHERE user_id = :user_id ORDER BY date DESC, time ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['user_id' => $userId]);
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
